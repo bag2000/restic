@@ -49,21 +49,20 @@ sudo ./install.sh
 
 ### Репозиторий
 
-```bash
-RESTIC_REPOSITORY="rest:http://LOGIN:PASSWORD@RESTIC_HOST:8000/PATH/"
-RESTIC_PASSWORD=""
-```
-
-- `LOGIN:PASSWORD` — Basic Auth REST-сервера;
-- `PATH` — путь к репозиторию, созданному на restic-сервере;
-- `RESTIC_PASSWORD` — пароль самого репозитория. Если репозиторий создан командой
-  `restic init --insecure-no-password`, оставьте пустым.
-
-Пример структуры (подставьте свои значения):
+`NAME` — имя сервера. Оно же используется как логин Basic Auth и как путь к репозиторию.
 
 ```bash
-RESTIC_REPOSITORY="rest:http://restic_user:restic_password@restic.example.com:8000/backup/"
+NAME="${NAME:-$(hostname)}"     # логин = NAME, путь = NAME
+RESTIC_HOST="restic.example.com"
+RESTIC_PORT="8000"
+RESTIC_HTTP_PASSWORD="..."      # пароль Basic Auth REST-сервера
+RESTIC_PASSWORD=""              # пароль самого репозитория
+RESTIC_REPOSITORY="rest:http://${NAME}:${RESTIC_HTTP_PASSWORD}@${RESTIC_HOST}:${RESTIC_PORT}/${NAME}/"
 ```
+
+- `RESTIC_HTTP_PASSWORD` — пароль Basic Auth REST-сервера, не пароль репозитория;
+- `RESTIC_PASSWORD` — пароль самого репозитория; пусто = `--insecure-no-password`;
+- итоговый URL: `rest:http://NAME:RESTIC_HTTP_PASSWORD@RESTIC_HOST:RESTIC_PORT/NAME/`.
 
 ### Что бэкапить
 
@@ -177,8 +176,8 @@ sudo ./install.sh
 Выполняется вручную один раз (на restic-сервере или откуда есть доступ):
 
 ```bash
-restic init --insecure-no-password \
-  -r "rest:http://LOGIN:PASSWORD@RESTIC_HOST:8000/PATH/"
+source .env
+restic init --insecure-no-password -r "$RESTIC_REPOSITORY"
 ```
 
 Если нужен пароль репозитория — уберите `--insecure-no-password` и задайте `RESTIC_PASSWORD`
@@ -187,6 +186,6 @@ restic init --insecure-no-password \
 ## Проверка содержимого репозитория
 
 ```bash
-restic --insecure-no-password \
-  -r "rest:http://LOGIN:PASSWORD@RESTIC_HOST:8000/PATH/" snapshots
+source .env
+restic --insecure-no-password -r "$RESTIC_REPOSITORY" snapshots
 ```

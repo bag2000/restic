@@ -47,8 +47,11 @@ bash -n "$ENV_SRC" || die "синтаксическая ошибка в $ENV_SRC
 # shellcheck disable=SC1090
 source "$ENV_SRC"
 
-if [ -z "${RESTIC_REPOSITORY:-}" ] || [[ "${RESTIC_REPOSITORY}" == *"LOGIN:PASSWORD"* ]]; then
-  die "заполните RESTIC_REPOSITORY в $ENV_SRC"
+if [ -z "${RESTIC_REPOSITORY:-}" ] \
+  || [[ "${RESTIC_REPOSITORY}" == *"CHANGE_ME"* ]] \
+  || [[ "${RESTIC_REPOSITORY}" == *"restic.example.com"* ]] \
+  || [[ "${RESTIC_REPOSITORY}" == *"LOGIN:PASSWORD"* ]]; then
+  die "заполните NAME, RESTIC_HOST и RESTIC_HTTP_PASSWORD в $ENV_SRC"
 fi
 
 BACKUP_CRON="${BACKUP_CRON:-0 2 * * *}"

@@ -56,12 +56,12 @@ NAME="${NAME:-$(hostname)}"     # логин = NAME, путь = NAME
 RESTIC_HOST="restic.example.com"
 RESTIC_PORT="8000"
 RESTIC_HTTP_PASSWORD="..."      # пароль Basic Auth REST-сервера
-RESTIC_PASSWORD=""              # пароль самого репозитория
 RESTIC_REPOSITORY="rest:http://${NAME}:${RESTIC_HTTP_PASSWORD}@${RESTIC_HOST}:${RESTIC_PORT}/${NAME}/"
 ```
 
 - `RESTIC_HTTP_PASSWORD` — пароль Basic Auth REST-сервера, не пароль репозитория;
-- `RESTIC_PASSWORD` — пароль самого репозитория; пусто = `--insecure-no-password`;
+- репозиторий restic создаётся без пароля (`--insecure-no-password`), поэтому
+  отдельный пароль репозитория не используется;
 - итоговый URL: `rest:http://NAME:RESTIC_HTTP_PASSWORD@RESTIC_HOST:RESTIC_PORT/NAME/`.
 
 ### Что бэкапить
@@ -180,8 +180,7 @@ source .env
 restic init --insecure-no-password -r "$RESTIC_REPOSITORY"
 ```
 
-Если нужен пароль репозитория — уберите `--insecure-no-password` и задайте `RESTIC_PASSWORD`
-в `.env`.
+Репозиторий создаётся без пароля — пароль репозитория не используется.
 
 ## Проверка содержимого репозитория
 

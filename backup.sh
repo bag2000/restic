@@ -17,14 +17,8 @@ source "$SCRIPT_DIR/.env"
 
 NAME="${NAME:-$(hostname)}"
 
-# Аргументы аутентификации restic.
-# Если RESTIC_PASSWORD задан, используем его, иначе репозиторий без пароля.
-RESTIC_AUTH_ARGS=()
-if [ -n "${RESTIC_PASSWORD:-}" ]; then
-  export RESTIC_PASSWORD
-else
-  RESTIC_AUTH_ARGS+=("--insecure-no-password")
-fi
+# Репозитории restic создаются без пароля (restic init --insecure-no-password).
+RESTIC_AUTH_ARGS=("--insecure-no-password")
 
 export BACKUP_PATH BACKUP_EXCLUDE RESTIC_REPOSITORY CPU_LIMIT MEM_LIMIT
 
